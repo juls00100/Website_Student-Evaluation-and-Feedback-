@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+    <div class="card card-dashboard">
+        <h2>Welcome back, {{ session['student_name'] }}!</h2>
+
+        <div class="stat-grid mt-4">
+            <div class="stat-box status-{{ student.status.lower() }}">
+                <p class="stat-label">Account Status</p>
+                <p class="stat-value">{{ student.status }}</p>
+                <small>Current Approval State</small>
+            </div>
+            
+            <div class="stat-box">
+                <p class="stat-label">Evaluations Done</p>
+                <p class="stat-value">{{ evaluations_count }}</p>
+                <small>Total forms submitted</small>
+            </div>
+
+            <div class="stat-box stat-progress">
+                <p class="stat-label">Instructors Left</p>
+                <p class="stat-value">{{ remaining_instructors }} / {{ total_instructors }}</p>
+                <small>Progress towards completion</small>
+            </div>
+        </div>
+        
+        <div class="user-details mt-4">
+            <h3>Your Details</h3>
+            <p><strong>School ID:</strong> <span>{{ student.id }}</span></p>
+            <p><strong>Email:</strong> <span>{{ student.email }}</span></p>
+            <p><strong>Year Level:</strong> <span>{{ student.year }}</span></p>
+        </div>
+
+        {% if remaining_instructors > 0 %}
+            <a href="{{ url_for('evaluate') }}" class="btn btn-primary mt-5">Start New Evaluation</a>
+        {% else %}
+            <p class="flash-message flash-success mt-5">
+                **SUCCESS:** You have evaluated all {{ total_instructors }} instructors. Thank you!
+            </p>
+        {% endif %}
+    </div>
+{% endblock %}

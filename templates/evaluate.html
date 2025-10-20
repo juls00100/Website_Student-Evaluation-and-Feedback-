@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Evaluate Instructor{% endblock %}
+
+{% block content %}
+    <div class="card card-evaluate">
+        <h2>Instructor Evaluation Form</h2>
+        
+        {% if all_instructors and not instructors %}
+            <p class="flash-message flash-success">
+                **Completed:** You have evaluated all **{{ all_instructors }}** instructors in the system.
+            </p>
+        {% elif not all_instructors %}
+            <p class="flash-message flash-info">
+                **INFO:** The system has no instructors. Please ask an administrator to perform the initial setup.
+            </p>
+        {% else %}
+            <p class="text-info">Please rate the instructor on a scale of 1 (Poor) to 5 (Excellent).</p>
+            
+            <form method="POST" class="mt-4">
+                <div class="form-group">
+                    <label for="instructor">Select Instructor</label>
+                    <select id="instructor" name="instructor" required>
+                        <option value="" disabled selected>-- Choose an Instructor --</option>
+                        {% for instructor in instructors %}
+                            <option value="{{ instructor.i_id }}">
+                                {{ instructor.i_first_name }} {{ instructor.i_last_name }} ({{ instructor.i_course }})
+                            </option>
+                        {% endfor %}
+                    </select>
+                </div>
+                
+                <div class="evaluation-section">
+                    <h3>Performance Rating</h3>
+
+                    <div class="form-group evaluation-item">
+                        <label>Q1: Instructor's clarity in explaining lessons/concepts.</label>
+                        <div class="rating-options">
+                            {% for i in range(1, 6) %}
+                                <div>
+                                    <input type="radio" id="q1-{{ i }}" name="q1" value="{{ i }}" required>
+                                    <label for="q1-{{ i }}">{{ i }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group evaluation-item">
+                        <label>Q2: Fairness and effectiveness of grading methods.</label>
+                        <div class="rating-options">
+                            {% for i in range(1, 6) %}
+                                <div>
+                                    <input type="radio" id="q2-{{ i }}" name="q2" value="{{ i }}" required>
+                                    <label for="q2-{{ i }}">{{ i }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group evaluation-item">
+                        <label>Q3: Ability to manage class time and deliver timely feedback.</label>
+                        <div class="rating-options">
+                            {% for i in range(1, 6) %}
+                                <div>
+                                    <input type="radio" id="q3-{{ i }}" name="q3" value="{{ i }}" required>
+                                    <label for="q3-{{ i }}">{{ i }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="form-group evaluation-item">
+                        <label>Q4: Overall impact on your learning experience.</label>
+                        <div class="rating-options">
+                            {% for i in range(1, 6) %}
+                                <div>
+                                    <input type="radio" id="q4-{{ i }}" name="q4" value="{{ i }}" required>
+                                    <label for="q4-{{ i }}">{{ i }}</label>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group mt-5">
+                    <label for="remarks">Additional Remarks (Optional)</label>
+                    <textarea id="remarks" name="remarks" rows="4" placeholder="Provide constructive comments or feedback here..."></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-primary">Submit Evaluation</button>
+            </form>
+        {% endif %}
+    </div>
+{% endblock %}

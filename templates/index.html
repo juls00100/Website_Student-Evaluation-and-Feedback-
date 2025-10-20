@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %}Login / Register{% endblock %}
+
+{% block content %}
+    <div class="card card-auth">
+        {% if instructors_empty %}
+            <h2 class="text-center">Initial Application Setup</h2>
+            <p class="text-center text-info">Please create the first instructor to start the system.</p>
+            <form method="POST" class="mt-4">
+                <input type="hidden" name="action" value="setup_init">
+                <div class="form-group">
+                    <label for="init_i_name">Instructor Full Name</label>
+                    <input type="text" id="init_i_name" name="init_i_name" placeholder="E.g., Dr. Jane Doe" required>
+                </div>
+                <div class="form-group">
+                    <label for="init_i_course">Primary Course Taught</label>
+                    <input type="text" id="init_i_course" name="init_i_course" placeholder="E.g., Advanced Calculus" required>
+                </div>
+                <button type="submit" class="btn btn-primary">Start System</button>
+            </form>
+        {% else %}
+            <div class="tabs">
+                <button class="tab-button" id="tab-button-login" onclick="switchTab('login')">Student Login</button>
+                <button class="tab-button" id="tab-button-register" onclick="switchTab('register')">Register</button>
+            </div>
+
+            <div id="login" class="tab-content">
+                <form method="POST">
+                    <input type="hidden" name="action" value="login">
+                    <div class="form-group">
+                        <label for="login_school_id">School ID</label>
+                        <input type="text" id="login_school_id" name="login_school_id" placeholder="Your School ID" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="login_password">Full Name (as Password)</label>
+                        <input type="text" id="login_password" name="login_password" placeholder="E.g., John Doe" required>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Login</button>
+                </form>
+            </div>
+
+            <div id="register" class="tab-content">
+                <form method="POST">
+                    <input type="hidden" name="action" value="register">
+                    <div class="form-group">
+                        <label for="reg_school_id">School ID</label>
+                        <input type="text" id="reg_school_id" name="reg_school_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_first_name">First Name</label>
+                        <input type="text" id="reg_first_name" name="reg_first_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_last_name">Last Name</label>
+                        <input type="text" id="reg_last_name" name="reg_last_name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_email">Email</label>
+                        <input type="email" id="reg_email" name="reg_email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_year_level">Year Level</label>
+                        <select id="reg_year_level" name="reg_year_level" required>
+                            <option value="" disabled selected>Select Year</option>
+                            <option value="1st Year">1st Year</option>
+                            <option value="2nd Year">2nd Year</option>
+                            <option value="3rd Year">3rd Year</option>
+                            <option value="4th Year">4th Year</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-secondary">Register Account</button>
+                </form>
+            </div>
+        {% endif %}
+    </div>
+{% endblock %}
