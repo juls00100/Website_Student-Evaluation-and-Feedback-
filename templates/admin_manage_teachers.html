@@ -1,0 +1,76 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Manage Teacher Accounts{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h2>Manage Teacher Accounts</h2>
+        <p class="text-info">Add, view, and delete login accounts for the teachers.</p>
+
+        <h3 class="mt-5 mb-3">Add New Teacher Account</h3>
+        <form method="POST" class="form-grid">
+            <input type="hidden" name="action" value="add">
+            <div class="form-group">
+                <label for="t_username" class="form-label">Username</label>
+                <input type="text" id="t_username" name="t_username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="t_password" class="form-label">Password</label>
+                <input type="password" id="t_password" name="t_password" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="t_first_name" class="form-label">First Name</label>
+                <input type="text" id="t_first_name" name="t_first_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="t_last_name" class="form-label">Last Name</label>
+                <input type="text" id="t_last_name" name="t_last_name" class="form-control" required>
+            </div>
+            <div class="form-group d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Add Teacher</button>
+            </div>
+        </form>
+
+        <h3 class="mt-5 mb-3">Existing Teacher Accounts ({{ teachers|length }})</h3>
+        {% if teachers %}
+            <div class="table-responsive">
+                <table class="data-table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Username</th>
+                            <th>Name</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for teacher in teachers %}
+                            <tr>
+                                <td>{{ teacher.t_id }}</td>
+                                <td>{{ teacher.t_username }}</td>
+                                <td>{{ teacher.t_first_name }} {{ teacher.t_last_name }}</td>
+                                <td>
+                                    <form method="POST" class="d-inline" onsubmit="return confirm('WARNING: Deleting a teacher is permanent and only works if no courses are assigned. Are you sure you want to delete {{ teacher.t_username }}?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="t_id" value="{{ teacher.t_id }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-info mt-4">No teacher accounts have been added yet.</p>
+        {% endif %}
+    </div>
+{% endblock %}

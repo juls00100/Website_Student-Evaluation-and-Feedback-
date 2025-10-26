@@ -4,6 +4,8 @@
 
 {% block content %}
     <div class="card card-evaluate">
+        {% include '_flash_messages.html' %} 
+        
         <h2>Instructor Evaluation Form</h2>
         
         {% if all_instructors and not instructors %}
@@ -30,56 +32,24 @@
                     </select>
                 </div>
                 
-                <div class="evaluation-section">
-                    <h3>Performance Rating</h3>
+                <h3 class="mt-5 mb-3">Evaluation Criteria</h3>
 
+                <div class="evaluation-questions">
+                    {% for q in questions %}
                     <div class="form-group evaluation-item">
-                        <label>Q1: Instructor's clarity in explaining lessons/concepts.</label>
+                        <!-- Dynamic Question Text -->
+                        <label>Q{{ loop.index }}: {{ q.q_text }}</label> 
                         <div class="rating-options">
                             {% for i in range(1, 6) %}
                                 <div>
-                                    <input type="radio" id="q1-{{ i }}" name="q1" value="{{ i }}" required>
-                                    <label for="q1-{{ i }}">{{ i }}</label>
+                                    <!-- Dynamic Name: q_1, q_2, q_3... -->
+                                    <input type="radio" id="q-{{ q.q_id }}-{{ i }}" name="q_{{ q.q_id }}" value="{{ i }}" required> 
+                                    <label for="q-{{ q.q_id }}-{{ i }}">{{ i }}</label>
                                 </div>
                             {% endfor %}
                         </div>
                     </div>
-                    
-                    <div class="form-group evaluation-item">
-                        <label>Q2: Fairness and effectiveness of grading methods.</label>
-                        <div class="rating-options">
-                            {% for i in range(1, 6) %}
-                                <div>
-                                    <input type="radio" id="q2-{{ i }}" name="q2" value="{{ i }}" required>
-                                    <label for="q2-{{ i }}">{{ i }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group evaluation-item">
-                        <label>Q3: Ability to manage class time and deliver timely feedback.</label>
-                        <div class="rating-options">
-                            {% for i in range(1, 6) %}
-                                <div>
-                                    <input type="radio" id="q3-{{ i }}" name="q3" value="{{ i }}" required>
-                                    <label for="q3-{{ i }}">{{ i }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
-                    
-                    <div class="form-group evaluation-item">
-                        <label>Q4: Overall impact on your learning experience.</label>
-                        <div class="rating-options">
-                            {% for i in range(1, 6) %}
-                                <div>
-                                    <input type="radio" id="q4-{{ i }}" name="q4" value="{{ i }}" required>
-                                    <label for="q4-{{ i }}">{{ i }}</label>
-                                </div>
-                            {% endfor %}
-                        </div>
-                    </div>
+                    {% endfor %}
                 </div>
 
                 <div class="form-group mt-5">

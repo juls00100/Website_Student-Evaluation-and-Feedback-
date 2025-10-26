@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Instructors{% endblock %}
+
+{% block content %}
+    <div class="card card-dashboard">
+        <h2>Manage Instructors</h2>
+        <p class="text-info">Add new instructors and view the current list.</p>
+
+        <h3 class="mt-5 mb-3">Add New Instructor</h3>
+        <form method="POST" class="form-grid">
+            <div class="form-group">
+                <label for="i_first_name">First Name</label>
+                <input type="text" id="i_first_name" name="i_first_name" required>
+            </div>
+            <div class="form-group">
+                <label for="i_last_name">Last Name</label>
+                <input type="text" id="i_last_name" name="i_last_name" required>
+            </div>
+            <div class="form-group">
+                <label for="i_course">Primary Course</label>
+                <input type="text" id="i_course" name="i_course" placeholder="e.g., Data Structures" required>
+            </div>
+            <div class="form-group form-submit-container">
+                <button type="submit" class="btn btn-primary">Add Instructor</button>
+            </div>
+        </form>
+
+        <h3 class="mt-5">Current Instructors ({{ instructors|length }})</h3>
+
+        {% if instructors %}
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Name</th>
+                        <th>Course</th>
+                        </tr>
+                </thead>
+                <tbody>
+                    {% for instructor in instructors %}
+                        <tr>
+                            <td>{{ instructor.i_id }}</td>
+                            <td>{{ instructor.i_first_name }} {{ instructor.i_last_name }}</td>
+                            <td>{{ instructor.i_course }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+            <p class="flash-message flash-info">No instructors have been added yet.</p>
+        {% endif %}
+
+    </div>
+{% endblock %}

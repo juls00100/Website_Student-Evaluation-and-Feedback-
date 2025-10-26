@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Login{% endblock %}
+
+{% block content %}
+<div class="d-flex justify-content-center align-items-center" style="min-height: 100vh;">
+    <div class="card p-5" style="max-width: 400px; width: 100%;">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2 class="text-center">Admin Login</h2>
+        <p class="text-center text-info">Use your administrator credentials.</p>
+        <form method="POST" class="mt-4">
+            <div class="mb-3">
+                <label for="username">Username</label>
+                <input type="text" id="username" name="username" placeholder="Admin Username" required>
+            </div>
+            <div class="mb-3">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Admin Password" required>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Login as Admin</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

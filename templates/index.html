@@ -4,48 +4,45 @@
 
 {% block content %}
     <div class="card card-auth">
+        {% include '_flash_messages.html' %} 
+
         {% if instructors_empty %}
             <h2 class="text-center">Initial Application Setup</h2>
-            <p class="text-center text-info">Please create the first instructor to start the system.</p>
-            <form method="POST" class="mt-4">
-                <input type="hidden" name="action" value="setup_init">
-                <div class="form-group">
-                    <label for="init_i_name">Instructor Full Name</label>
-                    <input type="text" id="init_i_name" name="init_i_name" placeholder="E.g., Dr. Jane Doe" required>
-                </div>
-                <div class="form-group">
-                    <label for="init_i_course">Primary Course Taught</label>
-                    <input type="text" id="init_i_course" name="init_i_course" placeholder="E.g., Advanced Calculus" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Start System</button>
-            </form>
+            <p class="text-center text-info">Please use the Admin Login to set up initial instructors.</p>
         {% else %}
             <div class="tabs">
                 <button class="tab-button" id="tab-button-login" onclick="switchTab('login')">Student Login</button>
                 <button class="tab-button" id="tab-button-register" onclick="switchTab('register')">Register</button>
             </div>
 
-            <div id="login" class="tab-content">
-                <form method="POST">
+            <div id="login" class="tab-content active">
+                <h2 class="text-center">Student Login</h2>
+                <form method="POST" class="mt-4">
                     <input type="hidden" name="action" value="login">
                     <div class="form-group">
                         <label for="login_school_id">School ID</label>
                         <input type="text" id="login_school_id" name="login_school_id" placeholder="Your School ID" required>
                     </div>
                     <div class="form-group">
-                        <label for="login_password">Full Name (as Password)</label>
-                        <input type="text" id="login_password" name="login_password" placeholder="E.g., John Doe" required>
+                        <label for="login_password">Password</label>
+                        <input type="password" id="login_password" name="login_password" placeholder="Your Password" required>
                     </div>
                     <button type="submit" class="btn btn-primary">Login</button>
                 </form>
             </div>
 
             <div id="register" class="tab-content">
-                <form method="POST">
+                <h2 class="text-center">Student Registration</h2>
+                <p class="text-center text-info">Your account will require administrator approval.</p>
+                <form method="POST" class="mt-4">
                     <input type="hidden" name="action" value="register">
                     <div class="form-group">
                         <label for="reg_school_id">School ID</label>
                         <input type="text" id="reg_school_id" name="reg_school_id" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="reg_password">Password</label>
+                        <input type="password" id="reg_password" name="reg_password" required>
                     </div>
                     <div class="form-group">
                         <label for="reg_first_name">First Name</label>

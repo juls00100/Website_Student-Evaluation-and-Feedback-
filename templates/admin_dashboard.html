@@ -1,0 +1,80 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        <h2>Admin Dashboard</h2>
+        <p class="text-info">Welcome, **{{ session['admin_name'] }}**. Use the links below to manage the system.</p>
+
+        <h3 class="mt-5 mb-3">System Overview</h3>
+        <div class="stat-grid">
+            <a href="{{ url_for('admin_manage_teachers') }}" class="stat-box text-decoration-none" style="border-left-color: #dc3545;">
+                <p class="stat-label">Teacher Accounts</p>
+                <p class="stat-value text-danger">{{ total_teachers }} Teachers</p>
+                <small class="text-secondary">Add, view, and manage logins.</small>
+            </a>
+            <a href="{{ url_for('admin_manage_instructors') }}" class="stat-box text-decoration-none" style="border-left-color: #0d6efd;">
+                <p class="stat-label">Courses/Instructors</p>
+                <p class="stat-value text-primary">{{ total_instructors }} Courses</p>
+                <small class="text-secondary">Add/edit instructors, and assign teachers.</small>
+            </a>
+            <a href="{{ url_for('admin_manage_questions') }}" class="stat-box text-decoration-none" style="border-left-color: #ffc107;">
+                <p class="stat-label">Evaluation Questions</p>
+                <p class="stat-value text-warning">{{ total_questions }} Questions</p>
+                <small class="text-secondary">Manage the questions used in evaluations.</small>
+            </a>
+            <a href="#pending-approvals" class="stat-box text-decoration-none" style="border-left-color: #28a745;">
+                <p class="stat-label">Pending Approvals</p>
+                <p class="stat-value text-success">{{ pending_students }} Students</p>
+                <small class="text-secondary">Student accounts awaiting authorization.</small>
+            </a>
+        </div>
+
+        <h3 class="mt-5 mb-3" id="pending-approvals">Pending Student Approvals ({{ pending_students }})</h3>
+        {% if students %}
+            <div class="table-responsive">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>School ID</th>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Year Level</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for student in students %}
+                            <tr>
+                                <td>{{ student.s_schoolID }}</td>
+                                <td>{{ student.s_first_name }} {{ student.s_last_name }}</td>
+                                <td>{{ student.s_email }}</td>
+                                <td>{{ student.s_year_level }}</td>
+                                <td>
+                                    <a href="{{ url_for('approve_student', student_id=student.s_schoolID) }}" 
+                                       class="btn btn-sm btn-primary">
+                                        Approve
+                                    </a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-success mt-4">
+                All registered students have been approved.
+            </p>
+        {% endif %}
+    </div>
+
+{% endblock %}

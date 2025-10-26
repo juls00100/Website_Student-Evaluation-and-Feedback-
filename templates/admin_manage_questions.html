@@ -1,0 +1,50 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Manage Evaluation Questions{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h2>Manage Evaluation Questions</h2>
+        <p class="text-info">Edit the text for existing questions, add new ones, or delete unused ones. (1 = Poor, 5 = Excellent)</p>
+
+        <h3 class="mt-5 mb-3">Current Questions ({{ questions|length }})</h3>
+        
+        <form method="POST" style="border: 1px solid #ddd; padding: 2rem; border-radius: 0.5rem; background-color: #f7f7f7;">
+            <input type="hidden" name="action" value="update_questions">
+            {% for q in questions %}
+                <div class="mb-3">
+                    <label for="q_text_{{ q.q_id }}" class="form-label">Question #{{ q.q_order }} (ID: {{ q.q_id }})</label>
+                    <div class="input-group">
+                        <input type="text" id="q_text_{{ q.q_id }}" name="q_text_{{ q.q_id }}" class="form-control" value="{{ q.q_text }}" required>
+                        <form method="POST" class="d-inline" onsubmit="return confirm('WARNING: Deleting a question is permanent and only works if no one has evaluated using it. Are you sure?');">
+                            <input type="hidden" name="action" value="delete_question">
+                            <input type="hidden" name="q_id_to_delete" value="{{ q.q_id }}">
+                            <button type="submit" class="btn btn-danger">Delete</button>
+                        </form>
+                    </div>
+                </div>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary mt-4">Save All Question Changes</button>
+        </form>
+
+        <h3 class="mt-5 mb-3">Add New Question</h3>
+        <form method="POST" class="form-grid">
+            <input type="hidden" name="action" value="add_question">
+            <div class="form-group" style="grid-column: 1 / span 2;">
+                <label for="new_q_text" class="form-label">New Question Text</label>
+                <input type="text" id="new_q_text" name="new_q_text" class="form-control" placeholder="e.g., The instructor was clear in their expectations." required>
+            </div>
+            <div class="form-group d-flex align-items-end">
+                <button type="submit" class="btn btn-secondary w-100">Add Question</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

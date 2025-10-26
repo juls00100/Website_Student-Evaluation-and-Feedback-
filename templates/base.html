@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Evaluation System{% endblock %}</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Assuming style.css is in a static folder and is the one you provided -->
     <link href="{{ url_for('static', filename='style.css') }}" rel="stylesheet">
 </head>
 <body>
@@ -14,32 +15,41 @@
                 <div class="logo">STUDENT HUB</div>
                 <div>
                     {% if session.get('student_id') %}
+                        <!-- Student Navigation -->
                         <a href="{{ url_for('dashboard') }}" class="nav-link">Dashboard</a>
                         <a href="{{ url_for('evaluate') }}" class="nav-link">Evaluate</a>
-                        <a href="{{ url_for('logout') }}" class="nav-btn">Logout</a>
+                        <a href="{{ url_for('logout') }}" class="nav-btn">Logout (Student)</a>
+                    {% elif session.get('admin_id') %}
+                        <!-- Admin Navigation -->
+                        <a href="{{ url_for('admin_dashboard') }}" class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('admin_manage_teachers') }}" class="nav-link">Teachers</a>
+                        <a href="{{ url_for('admin_manage_instructors') }}" class="nav-link">Courses</a>
+                        <a href="{{ url_for('admin_manage_questions') }}" class="nav-link">Questions</a>
+                        <a href="{{ url_for('admin_logout') }}" class="nav-btn">Logout (Admin)</a>
+                    {% elif session.get('teacher_id') %}
+                        <!-- Teacher Navigation -->
+                        <a href="{{ url_for('teacher_dashboard') }}" class="nav-link">Dashboard</a>
+                        <a href="{{ url_for('teacher_logout') }}" class="nav-btn">Logout (Teacher)</a>
                     {% else %}
-                        <a href="{{ url_for('index') }}" class="nav-btn">Login / Register</a>
+                        <!-- Public/Logged Out Navigation -->
+                        <a href="{{ url_for('index') }}" class="nav-link">Student Portal</a>
+                        <a href="{{ url_for('teacher_login') }}" class="nav-link">Teacher Login</a>
+                        <a href="{{ url_for('admin_login') }}" class="nav-btn">Admin Login</a>
                     {% endif %}
                 </div>
             </nav>
         </div>
     </header>
 
-    <main class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-            {% if messages %}
-                {% for category, message in messages %}
-                    <div class="flash-message flash-{{ category }}">{{ message }}</div>
-                {% endfor %}
-            {% endif %}
-        {% endwith %}
-        
-        {% block content %}{% endblock %}
+    <main>
+        <div class="container">
+            {% block content %}{% endblock %}
+        </div>
     </main>
 
     <footer>
         <div class="container">
-            &copy; 2025 MyWebsiteJulios | Instructor Evaluation System
+           Instructor Evaluation System
         </div>
     </footer>
 
@@ -60,10 +70,32 @@
         }
 
         window.onload = function() {
-            if (document.getElementById('login')) {
+            // Check for initial active tab based on query param (e.g., after registration)
+            const urlParams = new URLSearchParams(window.location.search);
+            const initialTab = urlParams.get('tab');
+            if (initialTab) {
+                switchTab(initialTab);
+            } else if (document.getElementById('login')) {
+                // Default to login if tabs are present
                 switchTab('login');
             } 
+            
+            // Add fade-out for flash messages for a better UX (optional)
+            document.querySelectorAll('.flash-message').forEach(el => {
+                setTimeout(() => {
+                    el.style.opacity = '0';
+                    el.style.transition = 'opacity 0.5s ease-out';
+                    setTimeout(() => el.remove(), 500);
+                }, 5000);
+            });
         };
+        
+        // Function to handle the custom confirmation before deleting
+        function customConfirm(message, form) {
+            if (window.confirm(message)) { // Using window.confirm as a simple fallback
+                form.submit();
+            }
+        }
     </script>
 </body>
 </html>

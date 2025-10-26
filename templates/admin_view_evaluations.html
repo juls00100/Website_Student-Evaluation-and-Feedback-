@@ -1,0 +1,59 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Results for {{ instructor.i_first_name }} {{ instructor.i_last_name }}{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h2>Evaluation Results</h2>
+        <h3 class="text-primary">{{ instructor.i_first_name }} {{ instructor.i_last_name }} ({{ instructor.i_course }})</h3>
+        <p class="text-info">Detailed breakdown of the feedback received for this course.</p>
+
+        <h3 class="mt-5 mb-3">Summary Ratings</h3>
+        <div class="table-responsive">
+            <table class="data-table table-hover">
+                <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Average Rating (1-5)</th>
+                        <th>Total Responses</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for stat in stats %}
+                    <tr>
+                        <td>{{ stat.q_text }}</td>
+                        <td><strong style="font-size: 1.2rem; color: #28a745;">{{ stat.avg_rating }}</strong></td>
+                        <td>{{ stat.total_responses }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <h3 class="mt-5 mb-3">Student Remarks ({{ remarks|length }})</h3>
+        {% if remarks %}
+            <div style="max-height: 400px; overflow-y: auto; padding: 1rem; border: 1px solid #ddd; border-radius: 0.25rem;">
+            {% for remark in remarks %}
+                <div style="border-bottom: 1px dashed #eee; padding: 0.75rem 0;">
+                    <p style="font-style: italic;">"{{ remark.e_remarks }}"</p>
+                    <small class="text-info">
+                        Submitted by {{ remark.s_year_level }} on {{ remark.e_timestamp.strftime('%Y-%m-%d %H:%M') }}
+                    </small>
+                </div>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p class="alert alert-info mt-4">No written remarks have been submitted yet.</p>
+        {% endif %}
+
+        <a href="{{ url_for('admin_manage_instructors') }}" class="btn btn-secondary mt-4">Back to Instructors</a>
+    </div>
+{% endblock %}

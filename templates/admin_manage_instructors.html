@@ -1,0 +1,92 @@
+{% extends "admin_base.html" %}
+
+{% block title %}Manage Instructors/Courses{% endblock %}
+
+{% block content %}
+    <div class="card-dashboard">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        <h2>Manage Instructors/Courses</h2>
+        <p class="text-info">Add new courses/instructors, view their evaluations, and assign teacher accounts to them.</p>
+
+        <h3 class="mt-5 mb-3">Add New Instructor/Course</h3>
+        <form method="POST" class="form-grid">
+            <input type="hidden" name="action" value="add">
+            <div class="form-group">
+                <label for="i_first_name" class="form-label">First Name</label>
+                <input type="text" id="i_first_name" name="i_first_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="i_last_name" class="form-label">Last Name</label>
+                <input type="text" id="i_last_name" name="i_last_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="i_course" class="form-label">Primary Course</label>
+                <input type="text" id="i_course" name="i_course" class="form-control" placeholder="e.g., Data Structures" required>
+            </div>
+            <div class="form-group d-flex align-items-end">
+                <button type="submit" class="btn btn-primary w-100">Add Instructor</button>
+            </div>
+        </form>
+
+        <h3 class="mt-5 mb-3">Existing Instructors ({{ instructors|length }})</h3>
+        {% if instructors %}
+            <div class="table-responsive">
+                <table class="data-table table-hover">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Name</th>
+                            <th>Course</th>
+                            <th>Assigned Teacher</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for instructor in instructors %}
+                            <tr>
+                                <td>{{ instructor.i_id }}</td>
+                                <td>{{ instructor.i_first_name }} {{ instructor.i_last_name }}</td>
+                                <td>{{ instructor.i_course }}</td>
+                                <td>
+                                    <form method="POST" class="d-inline-flex align-items-center">
+                                        <input type="hidden" name="action" value="assign_teacher">
+                                        <input type="hidden" name="i_id" value="{{ instructor.i_id }}">
+                                        <select name="t_id" class="form-select form-select-sm" onchange="this.form.submit()">
+                                            <option value="None">-- Unassigned --</option>
+                                            {% for teacher in teachers %}
+                                            <option value="{{ teacher.t_id }}" {% if instructor.assigned_teacher_id == teacher.t_id %}selected{% endif %}>
+                                                {{ teacher.t_last_name }}, {{ teacher.t_first_name }}
+                                            </option>
+                                            {% endfor %}
+                                        </select>
+                                    </form>
+                                </td>
+                                <td>
+                                    <a href="{{ url_for('admin_view_evaluations', instructor_id=instructor.i_id) }}" 
+                                       class="btn btn-info btn-sm me-2">
+                                        View Results
+                                    </a>
+                                    <form method="POST" class="d-inline" onsubmit="return confirm('WARNING: Deleting an instructor is permanent and only works if no evaluations exist. Are you sure you want to delete {{ instructor.i_first_name }} {{ instructor.i_last_name }}?');">
+                                        <input type="hidden" name="action" value="delete">
+                                        <input type="hidden" name="i_id" value="{{ instructor.i_id }}">
+                                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                                    </form>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="alert alert-info mt-4">No instructors have been added yet.</p>
+        {% endif %}
+
+    </div>
+{% endblock %}
